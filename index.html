@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anatomical Position & Directional Terms Study Hub</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <h1>Anatomical Position & Directional Terms Study Hub</h1>
+      <p>
+        Learn core anatomy language with guided notes, interactive flashcards,
+        and a self-check quiz.
+      </p>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h2>1) Quick Lesson: Anatomical Position</h2>
+        <ul>
+          <li>Body is standing upright and facing forward.</li>
+          <li>Arms are at the sides with palms facing forward.</li>
+          <li>Feet are flat on the floor and pointing forward.</li>
+          <li>
+            This standard reference position helps avoid confusion when
+            describing the body.
+          </li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <div class="section-head">
+          <h2>2) Study Flashcards</h2>
+          <button id="shuffleBtn" class="secondary">Shuffle Cards</button>
+        </div>
+        <div class="flashcard-area">
+          <button id="prevCard" aria-label="Previous card">◀</button>
+          <article id="flashcard" class="flashcard" tabindex="0" role="button" aria-live="polite">
+            <h3 id="cardFront">Term</h3>
+            <p id="cardBack" class="hidden"></p>
+            <small>Click card to flip</small>
+          </article>
+          <button id="nextCard" aria-label="Next card">▶</button>
+        </div>
+        <p id="cardIndex" class="muted"></p>
+      </section>
+
+      <section class="panel">
+        <h2>3) Label Directional Meanings</h2>
+        <p>Match each term to its meaning. Press "Check Answers" when done.</p>
+        <div id="matchingGrid" class="matching-grid"></div>
+        <div class="matching-actions">
+          <button id="checkMatching">Check Answers</button>
+          <button id="resetMatching" class="secondary">Reset</button>
+        </div>
+        <p id="matchingFeedback" class="muted"></p>
+      </section>
+
+      <section class="panel">
+        <h2>4) Mini Quiz</h2>
+        <p>Answer all questions and submit for a score.</p>
+        <form id="quizForm"></form>
+        <div class="quiz-actions">
+          <button id="submitQuiz" type="button">Submit Quiz</button>
+          <button id="retryQuiz" type="button" class="secondary">Retry</button>
+        </div>
+        <p id="quizResult" class="muted"></p>
+      </section>
+    </main>
+
+    <footer>
+      <p>Tip: Study in short sessions and say each term out loud while you practice.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
