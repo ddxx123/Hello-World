@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello World App</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 2rem; line-height: 1.5; }
+      .card { max-width: 480px; border: 1px solid #ddd; border-radius: 10px; padding: 1rem; }
+      label, input, button { font-size: 1rem; }
+      input { padding: 0.4rem; width: 100%; margin: 0.5rem 0 1rem; box-sizing: border-box; }
+      button { padding: 0.5rem 0.8rem; cursor: pointer; }
+      #greeting { margin-top: 1rem; font-weight: 700; color: #1e40af; }
+      #history { margin-top: 1rem; padding-left: 1.1rem; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Hello World</h1>
+      <p>Type your name and click the button to interact with the app.</p>
+
+      <label for="name">Your name</label>
+      <input id="name" type="text" placeholder="e.g., Sam" />
+      <button id="greet-btn">Generate greeting</button>
+
+      <div id="greeting">Hello, World!</div>
+      <ul id="history"></ul>
+    </div>
+
+    <script>
+      const nameInput = document.getElementById('name');
+      const greetButton = document.getElementById('greet-btn');
+      const greetingEl = document.getElementById('greeting');
+      const historyEl = document.getElementById('history');
+
+      greetButton.addEventListener('click', () => {
+        const enteredName = nameInput.value.trim();
+        const name = enteredName || 'World';
+        const message = `Hello, ${name}!`;
+        greetingEl.textContent = message;
+
+        const eventItem = document.createElement('li');
+        eventItem.textContent = `Greeted ${name} at ${new Date().toLocaleTimeString()}`;
+        historyEl.prepend(eventItem);
+      });
+    </script>
+  </body>
+</html>
