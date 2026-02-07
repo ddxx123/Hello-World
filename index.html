@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anatomical Terminology Study App</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --ink: #1c2733;
+      --muted: #4f6375;
+      --accent: #0c7cba;
+      --accent-soft: #d9eef9;
+      --border: #d9e2ec;
+      --ok: #0f7f49;
+      --warn: #a35c00;
+      --bad: #9f1f1f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0c7cba, #0a5f90);
+      color: white;
+      padding: 2.5rem 1rem;
+      text-align: center;
+    }
+
+    header h1 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.4rem); }
+    header p { margin: .6rem auto 0; max-width: 800px; opacity: 0.95; }
+
+    main {
+      max-width: 1050px;
+      margin: 1.4rem auto 3rem;
+      padding: 0 1rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      box-shadow: 0 8px 22px rgba(13, 40, 64, 0.06);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      color: #11344f;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .55rem;
+      padding: 0;
+      margin: .75rem 0 0;
+      list-style: none;
+    }
+
+    .chips li {
+      background: var(--accent-soft);
+      border: 1px solid #bfe3f6;
+      border-radius: 999px;
+      padding: .34rem .72rem;
+      font-weight: 600;
+      font-size: .92rem;
+      color: #0b5178;
+    }
+
+    dl {
+      margin: .65rem 0 0;
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: .35rem .85rem;
+    }
+
+    dt { font-weight: 700; color: #173d58; }
+    dd { margin: 0; color: var(--muted); }
+
+    @media (max-width: 680px) {
+      dl { grid-template-columns: 1fr; }
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .95rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: .6rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th { background: #f0f8fd; }
+
+    input, select {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .55rem .7rem;
+      font-size: 1rem;
+      background: #fff;
+    }
+
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: .55rem .9rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .study-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: .9rem;
+    }
+
+    .study-activity {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .8rem;
+      background: #fbfdff;
+    }
+
+    .study-activity h3 {
+      margin: 0 0 .4rem;
+      font-size: 1.02rem;
+      color: #174a6f;
+    }
+
+    .prompt { margin: .35rem 0; font-weight: 600; }
+
+    .row {
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: .45rem;
+    }
+
+    .feedback {
+      margin-top: .5rem;
+      font-weight: 700;
+      min-height: 1.2rem;
+    }
+
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+
+    .inline-options {
+      display: flex;
+      gap: 1rem;
+      margin-top: .45rem;
+      flex-wrap: wrap;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: .9rem;
+      margin: 0 1rem 2rem;
+    }
+
+    code { background: #ecf3f9; padding: .05rem .3rem; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Anatomical Terminology Study App</h1>
+    <p>Reference sheet based on OpenStax <em>Anatomy and Physiology 2e</em>, section 1.6, to help learners review position, direction, planes, and body regions.</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Anatomical Position</h2>
+      <p>The standard anatomical position describes a person standing upright, feet at shoulder width and parallel, toes pointing forward, arms at the sides, and palms facing forward.</p>
+      <ul class="chips">
+        <li>Reference posture</li>
+        <li>Palms anterior</li>
+        <li>Neutral orientation</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Directional Terms</h2>
+      <dl>
+        <dt>Superior / Inferior</dt>
+        <dd>Superior means toward the head; inferior means away from the head.</dd>
+
+        <dt>Anterior / Posterior</dt>
+        <dd>Anterior means toward the front; posterior means toward the back.</dd>
+
+        <dt>Medial / Lateral</dt>
+        <dd>Medial means toward the midline; lateral means away from the midline.</dd>
+
+        <dt>Proximal / Distal</dt>
+        <dd>Proximal means closer to the trunk or point of origin; distal means farther away.</dd>
+
+        <dt>Superficial / Deep</dt>
+        <dd>Superficial means close to body surface; deep means farther from the surface.</dd>
+      </dl>
+    </section>
+
+    <section class="card">
+      <h2>Body Planes</h2>
+      <div class="table-wrap">
+        <table aria-label="Body planes overview">
+          <thead>
+            <tr>
+              <th>Plane</th>
+              <th>How it divides the body</th>
+              <th>Example idea</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Sagittal</td>
+              <td>Left and right portions (midsagittal is equal halves).</td>
+              <td>Comparing right and left cerebral hemispheres.</td>
+            </tr>
+            <tr>
+              <td>Frontal (Coronal)</td>
+              <td>Anterior and posterior portions.</td>
+              <td>Viewing chest structures from the front.</td>
+            </tr>
+            <tr>
+              <td>Transverse</td>
+              <td>Superior and inferior portions.</td>
+              <td>Cross-sectional abdominal imaging.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Abdominopelvic Regions and Quadrants</h2>
+      <p>The nine-region method uses right/left hypochondriac, epigastric, right/left lumbar, umbilical, right/left iliac (inguinal), and hypogastric (pubic) regions. Clinically, the four quadrants are RUQ, LUQ, RLQ, and LLQ.</p>
+      <ul class="chips">
+        <li>RUQ</li>
+        <li>LUQ</li>
+        <li>RLQ</li>
+        <li>LLQ</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Major Body Cavities</h2>
+      <dl>
+        <dt>Dorsal cavity</dt>
+        <dd>Contains cranial cavity and vertebral (spinal) cavity.</dd>
+
+        <dt>Ventral cavity</dt>
+        <dd>Contains thoracic cavity and abdominopelvic cavity, separated by the diaphragm.</dd>
+
+        <dt>Serous membranes</dt>
+        <dd>Pleura surrounds lungs, pericardium surrounds heart, and peritoneum lines abdominopelvic organs.</dd>
+      </dl>
+    </section>
+
+    <section class="card">
+      <h2>Study Lab</h2>
+      <p>Practice with multiple activity types: matching pairs, fill-in-the-blank, yes/no, and multiple choice.</p>
+
+      <div class="study-grid">
+        <article class="study-activity">
+          <h3>Matching Pairs</h3>
+          <p class="prompt">Match the term to the definition: <strong>Distal</strong></p>
+          <div class="row">
+            <select id="match-select" aria-label="Match distal definition">
+              <option value="">Choose a definition</option>
+              <option value="near">Closer to the trunk or point of origin</option>
+              <option value="farther">Farther from the trunk or point of origin</option>
+              <option value="front">Toward the front of the body</option>
+            </select>
+            <button id="match-check" type="button">Check</button>
+          </div>
+          <p id="match-feedback" class="feedback" role="status" aria-live="polite"></p>
+        </article>
+
+        <article class="study-activity">
+          <h3>Fill in the Blank</h3>
+          <p class="prompt">The plane that divides the body into left and right portions is the ______ plane.</p>
+          <div class="row">
+            <input id="blank-input" type="text" autocomplete="off" placeholder="Type answer" />
+            <button id="blank-check" type="button">Check</button>
+          </div>
+          <p id="blank-feedback" class="feedback" role="status" aria-live="polite"></p>
+        </article>
+
+        <article class="study-activity">
+          <h3>Yes or No</h3>
+          <p class="prompt">Yes or No: "Superior" means toward the feet.</p>
+          <div class="inline-options" aria-label="yes or no answers">
+            <label><input type="radio" name="yesno" value="yes" /> Yes</label>
+            <label><input type="radio" name="yesno" value="no" /> No</label>
+          </div>
+          <div class="row">
+            <button id="yesno-check" type="button">Check</button>
+          </div>
+          <p id="yesno-feedback" class="feedback" role="status" aria-live="polite"></p>
+        </article>
+
+        <article class="study-activity">
+          <h3>Multiple Choice</h3>
+          <p class="prompt">Which cavity directly contains the heart?</p>
+          <div class="row">
+            <select id="mcq-select" aria-label="heart cavity multiple choice">
+              <option value="">Choose one</option>
+              <option value="pleural">Pleural cavity</option>
+              <option value="pericardial">Pericardial cavity</option>
+              <option value="vertebral">Vertebral cavity</option>
+            </select>
+            <button id="mcq-check" type="button">Check</button>
+          </div>
+          <p id="mcq-feedback" class="feedback" role="status" aria-live="polite"></p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Source: OpenStax, <em>Anatomy and Physiology 2e</em>, section <code>1.6 Anatomical Terminology</code>.
+  </footer>
+
+  <script>
+    function setFeedback(el, message, tone) {
+      el.textContent = message;
+      el.classList.remove('ok', 'warn', 'bad');
+      el.classList.add(tone);
+    }
+
+    document.getElementById('match-check').addEventListener('click', () => {
+      const value = document.getElementById('match-select').value;
+      const feedback = document.getElementById('match-feedback');
+
+      if (!value) {
+        setFeedback(feedback, 'Pick a definition before checking.', 'warn');
+      } else if (value === 'farther') {
+        setFeedback(feedback, 'Correct: distal means farther from the trunk or origin.', 'ok');
+      } else {
+        setFeedback(feedback, 'Not quite. Distal means farther from the trunk or point of origin.', 'bad');
+      }
+    });
+
+    document.getElementById('blank-check').addEventListener('click', () => {
+      const response = document.getElementById('blank-input').value.trim().toLowerCase();
+      const feedback = document.getElementById('blank-feedback');
+
+      if (!response) {
+        setFeedback(feedback, 'Enter a term first.', 'warn');
+      } else if (response === 'sagittal' || response === 'midsagittal') {
+        setFeedback(feedback, 'Correct: sagittal (or midsagittal for equal halves).', 'ok');
+      } else {
+        setFeedback(feedback, 'Try again. The expected answer is sagittal.', 'bad');
+      }
+    });
+
+    document.getElementById('yesno-check').addEventListener('click', () => {
+      const selected = document.querySelector('input[name="yesno"]:checked');
+      const feedback = document.getElementById('yesno-feedback');
+
+      if (!selected) {
+        setFeedback(feedback, 'Please choose Yes or No.', 'warn');
+      } else if (selected.value === 'no') {
+        setFeedback(feedback, 'Correct: superior means toward the head, not the feet.', 'ok');
+      } else {
+        setFeedback(feedback, 'Incorrect. Superior means toward the head.', 'bad');
+      }
+    });
+
+    document.getElementById('mcq-check').addEventListener('click', () => {
+      const value = document.getElementById('mcq-select').value;
+      const feedback = document.getElementById('mcq-feedback');
+
+      if (!value) {
+        setFeedback(feedback, 'Select an answer first.', 'warn');
+      } else if (value === 'pericardial') {
+        setFeedback(feedback, 'Correct: the heart is enclosed by the pericardial cavity.', 'ok');
+      } else {
+        setFeedback(feedback, 'Not correct. The heart lies in the pericardial cavity.', 'bad');
+      }
+    });
+  </script>
+</body>
+</html>
