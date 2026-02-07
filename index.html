@@ -10,8 +10,8 @@
     <header class="hero">
       <h1>Anatomical Position & Directional Terms Study Hub</h1>
       <p>
-        Learn core anatomy language with guided notes, interactive flashcards,
-        and a self-check quiz.
+        Learn anatomy language with guided notes, interactive flashcards,
+        matching drills, and a quiz.
       </p>
     </header>
 
@@ -20,12 +20,13 @@
         <h2>1) Quick Lesson: Anatomical Position</h2>
         <ul>
           <li>Body is standing upright and facing forward.</li>
-          <li>Arms are at the sides with palms facing forward.</li>
-          <li>Feet are flat on the floor and pointing forward.</li>
+          <li>Feet are shoulder-width apart, parallel, and toes point forward.</li>
+          <li>Upper limbs are at the sides and palms face forward.</li>
           <li>
-            This standard reference position helps avoid confusion when
-            describing the body.
+            Terms are described as if the body is in this standard position to
+            reduce confusion.
           </li>
+          <li>Prone = face down; supine = face up.</li>
         </ul>
       </section>
 
@@ -36,10 +37,16 @@
         </div>
         <div class="flashcard-area">
           <button id="prevCard" aria-label="Previous card">◀</button>
-          <article id="flashcard" class="flashcard" tabindex="0" role="button" aria-live="polite">
+          <article
+            id="flashcard"
+            class="flashcard"
+            tabindex="0"
+            role="button"
+            aria-live="polite"
+          >
             <h3 id="cardFront">Term</h3>
             <p id="cardBack" class="hidden"></p>
-            <small>Click card to flip</small>
+            <small id="cardHint">Click or press Enter/Space to flip</small>
           </article>
           <button id="nextCard" aria-label="Next card">▶</button>
         </div>
@@ -47,8 +54,8 @@
       </section>
 
       <section class="panel">
-        <h2>3) Label Directional Meanings</h2>
-        <p>Match each term to its meaning. Press "Check Answers" when done.</p>
+        <h2>3) Match Directional Terms</h2>
+        <p>Match each term to its meaning. Then press "Check Answers".</p>
         <div id="matchingGrid" class="matching-grid"></div>
         <div class="matching-actions">
           <button id="checkMatching">Check Answers</button>
@@ -70,7 +77,11 @@
     </main>
 
     <footer>
-      <p>Tip: Study in short sessions and say each term out loud while you practice.</p>
+      <p>
+        Content aligned to OpenStax Anatomy & Physiology 2e section 1.6
+        (Anatomical Terminology).
+      </p>
+      <a href="https://openstax.org/books/anatomy-and-physiology-2e/pages/1-6-anatomical-terminology" target="_blank" rel="noreferrer noopener">Source material</a>
     </footer>
 
     <script src="script.js"></script>

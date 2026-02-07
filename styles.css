@@ -81,6 +81,11 @@ main {
   outline: 3px solid #84a8ff;
 }
 
+.flashcard h3,
+.flashcard p {
+  margin: 0.35rem 0;
+}
+
 .matching-grid {
   display: grid;
   gap: 0.7rem;
@@ -88,7 +93,7 @@ main {
 
 .matching-row {
   display: grid;
-  grid-template-columns: 160px 1fr;
+  grid-template-columns: 190px 1fr;
   gap: 0.8rem;
   align-items: center;
 }
@@ -166,6 +171,11 @@ footer {
   text-align: center;
   color: var(--muted);
   padding: 0.6rem 1rem 2rem;
+}
+
+footer a {
+  color: #2d4ca2;
+  font-weight: 600;
 }
 
 @media (max-width: 680px) {

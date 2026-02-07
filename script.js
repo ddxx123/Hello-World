@@ -24,22 +24,42 @@ const flashcards = [
     definition: "Away from the body's midline."
   },
   {
+    term: "Intermediate",
+    definition: "Between a more medial and a more lateral structure."
+  },
+  {
     term: "Proximal",
     definition: "Nearer to the trunk or point of origin."
   },
   {
     term: "Distal",
     definition: "Farther from the trunk or point of origin."
+  },
+  {
+    term: "Superficial",
+    definition: "Toward or at the body surface."
+  },
+  {
+    term: "Deep",
+    definition: "Away from the body surface; more internal."
+  },
+  {
+    term: "Ipsilateral / Contralateral",
+    definition: "Ipsilateral = same side of body; contralateral = opposite sides."
   }
 ];
 
 const matchingTerms = [
   ["Superior", "Toward the head or upper part"],
   ["Inferior", "Toward the feet or lower part"],
+  ["Anterior", "Toward the front of the body"],
+  ["Posterior", "Toward the back of the body"],
   ["Medial", "Toward the midline"],
   ["Lateral", "Away from the midline"],
   ["Proximal", "Nearer to the point of attachment"],
-  ["Distal", "Farther from the point of attachment"]
+  ["Distal", "Farther from the point of attachment"],
+  ["Superficial", "Toward the body surface"],
+  ["Deep", "Away from the body surface"]
 ];
 
 const quizQuestions = [
@@ -49,9 +69,19 @@ const quizQuestions = [
     answer: "Forward"
   },
   {
-    question: "The nose is ____ to the ears.",
-    options: ["Lateral", "Posterior", "Medial", "Inferior"],
-    answer: "Medial"
+    question: "Which statement is part of the anatomical position?",
+    options: [
+      "Feet crossed and toes outward",
+      "Feet shoulder-width apart with toes forward",
+      "Elbows flexed with palms inward",
+      "Body lying supine"
+    ],
+    answer: "Feet shoulder-width apart with toes forward"
+  },
+  {
+    question: "The sternum is ____ to the vertebral column.",
+    options: ["Posterior", "Distal", "Anterior", "Inferior"],
+    answer: "Anterior"
   },
   {
     question: "The elbow is ____ to the wrist.",
@@ -59,9 +89,9 @@ const quizQuestions = [
     answer: "Proximal"
   },
   {
-    question: "The chest is ____ to the spine.",
-    options: ["Posterior", "Anterior", "Distal", "Medial"],
-    answer: "Anterior"
+    question: "A skin abrasion is usually ____ to the skeletal muscles.",
+    options: ["Deep", "Superior", "Superficial", "Contralateral"],
+    answer: "Superficial"
   }
 ];
 
@@ -71,6 +101,7 @@ let isFlipped = false;
 const flashcardEl = document.getElementById("flashcard");
 const cardFrontEl = document.getElementById("cardFront");
 const cardBackEl = document.getElementById("cardBack");
+const cardHintEl = document.getElementById("cardHint");
 const cardIndexEl = document.getElementById("cardIndex");
 
 function renderCard() {
@@ -78,13 +109,19 @@ function renderCard() {
   cardFrontEl.textContent = card.term;
   cardBackEl.textContent = card.definition;
   isFlipped = false;
+  cardFrontEl.classList.remove("hidden");
   cardBackEl.classList.add("hidden");
+  cardHintEl.textContent = "Click or press Enter/Space to flip";
   cardIndexEl.textContent = `Card ${activeCardIndex + 1} of ${flashcards.length}`;
 }
 
 function flipCard() {
   isFlipped = !isFlipped;
+  cardFrontEl.classList.toggle("hidden", isFlipped);
   cardBackEl.classList.toggle("hidden", !isFlipped);
+  cardHintEl.textContent = isFlipped
+    ? "Showing definition"
+    : "Showing term";
 }
 
 document.getElementById("nextCard").addEventListener("click", () => {
@@ -117,7 +154,10 @@ flashcardEl.addEventListener("keydown", event => {
 const matchingGridEl = document.getElementById("matchingGrid");
 
 function renderMatching() {
-  const meanings = matchingTerms.map(([, meaning]) => meaning).sort(() => Math.random() - 0.5);
+  const meanings = matchingTerms
+    .map(([, meaning]) => meaning)
+    .sort(() => Math.random() - 0.5);
+
   matchingGridEl.innerHTML = "";
 
   matchingTerms.forEach(([term], index) => {
@@ -163,7 +203,10 @@ function checkMatchingAnswers() {
   feedback.className = correct === total ? "correct" : "incorrect";
 }
 
-document.getElementById("checkMatching").addEventListener("click", checkMatchingAnswers);
+document
+  .getElementById("checkMatching")
+  .addEventListener("click", checkMatchingAnswers);
+
 document.getElementById("resetMatching").addEventListener("click", () => {
   renderMatching();
   const feedback = document.getElementById("matchingFeedback");
@@ -205,7 +248,7 @@ function submitQuiz() {
   let score = 0;
 
   quizQuestions.forEach((item, qIndex) => {
-    const chosen = quizForm.querySelector(`input[name=\"q-${qIndex}\"]:checked`);
+    const chosen = quizForm.querySelector(`input[name="q-${qIndex}"]:checked`);
     if (chosen?.value === item.answer) {
       score += 1;
     }
@@ -217,6 +260,7 @@ function submitQuiz() {
 }
 
 document.getElementById("submitQuiz").addEventListener("click", submitQuiz);
+
 document.getElementById("retryQuiz").addEventListener("click", () => {
   renderQuiz();
   const result = document.getElementById("quizResult");
