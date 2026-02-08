@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anatomical Regions Flashcards (OOP SVG)</title>
+<style>
+:root{--panel:#111827;--card:#fff;--ink:#0f172a;--ok:#166534;--bad:#991b1b;--head:#fde68a;--neck:#fca5a5;--trunk:#93c5fd;--upper:#c4b5fd;--lower:#86efac}
+*{box-sizing:border-box} body{margin:0;padding:20px;font-family:"Segoe UI",Tahoma,Verdana,sans-serif;background:linear-gradient(180deg,#0b1022,#111827);color:#e5e7eb}
+.app{max-width:1180px;margin:0 auto}.toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0}
+.control{background:var(--panel);border:1px solid #243042;border-radius:10px;padding:10px}.control label{display:block;font-size:.8rem;color:#94a3b8;margin-bottom:4px}
+select,button{width:100%;padding:8px;border-radius:8px;border:1px solid #334155;background:#0b1220;color:#e2e8f0;font-weight:600}
+.flashcard{background:var(--card);color:var(--ink);border-radius:14px;padding:16px;display:grid;grid-template-columns:1.3fr 1fr;gap:16px;box-shadow:0 16px 30px rgba(0,0,0,.35)}
+@media(max-width:980px){.flashcard{grid-template-columns:1fr}} .diagram-wrap{border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;padding:10px} svg{width:100%;height:auto}
+.region{stroke:#1f2937;stroke-width:1.1;cursor:pointer}.region.target{stroke:#2563eb;stroke-width:2.8}.region.correct{stroke:#166534;stroke-width:2.9}.region.wrong{stroke:#b91c1c;stroke-width:2.9}
+.silhouette{fill:#c99862;stroke:#7a4b26;stroke-width:1.5}.landmark{stroke:#7a4b26;stroke-width:1;fill:none;opacity:.6}
+.axis{stroke:#334155;stroke-width:1}.axis-label{font-size:11px;fill:#334155;font-weight:700}.callout{stroke:#475569;stroke-width:1;fill:none}.callout-label{font-size:12px;font-weight:800;fill:#1e293b}
+.meta{border:1px solid #e2e8f0;border-radius:12px;padding:12px}.masked{font-size:1.28rem;font-weight:800;color:#334155}.prompt{margin:10px 0;font-weight:600}
+.choices{display:grid;gap:8px}.feedback{margin-top:8px;padding:8px;border-radius:8px;font-weight:700}.feedback.ok{background:#dcfce7;color:var(--ok)}.feedback.bad{background:#fee2e2;color:var(--bad)}
+.back{margin-top:10px;border-top:1px solid #e2e8f0;padding-top:10px;font-size:.95rem;line-height:1.32}.front-note{margin-top:8px;border:1px dashed #94a3b8;border-radius:10px;padding:10px;color:#334155;font-size:.92rem}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;font-size:.8rem;color:#475569}.chip{border:1px solid #cbd5e1;border-radius:999px;padding:2px 8px}
+.stats{margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.stat{background:#0f172a;border:1px solid #27364c;color:#cbd5e1;border-radius:8px;padding:8px;font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>Anatomical Regions Flashcards</h1>
+  <div>Object-oriented architecture with strict anatomical orientation (anterior/posterior, true anatomical left/right).</div>
+  <div class="toolbar">
+    <div class="control"><label for="mode">Active Recall Mode</label><select id="mode"><option value="visualToName">Visual → Name</option><option value="nameToVisual">Name → Visual</option></select></div>
+    <div class="control"><label for="difficulty">Difficulty</label><select id="difficulty"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></div>
+    <div class="control"><label>&nbsp;</label><button id="nextBtn">Next Card</button></div>
+    <div class="control"><label>&nbsp;</label><button id="resetBtn">Reset Stats</button></div>
+  </div>
+
+  <div class="flashcard">
+    <div>
+      <div class="diagram-wrap">
+        <svg id="diagram" viewBox="0 0 920 760" aria-label="Anterior and posterior anatomical region model"></svg>
+        <div id="viewBadge" class="legend"></div>
+        <div class="legend"><span class="chip" style="background:var(--head)">Head</span><span class="chip" style="background:var(--neck)">Neck</span><span class="chip" style="background:var(--trunk)">Trunk</span><span class="chip" style="background:var(--upper)">Upper limb</span><span class="chip" style="background:var(--lower)">Lower limb</span></div>
+      </div>
+      <div id="frontNote" class="front-note">Front: identify the highlighted region. Labels use formal anatomical terminology.</div>
+    </div>
+    <div class="meta">
+      <div id="maskedName" class="masked">Region: ▮▮▮▮▮▮▮</div>
+      <div id="prompt" class="prompt">Select the highlighted anatomical term.</div>
+      <div id="choices" class="choices"></div>
+      <div id="feedback"></div>
+      <div id="back" class="back" hidden></div>
+    </div>
+  </div>
+  <div id="stats" class="stats"></div>
+</div>
+
+<script>
+const REGION_DATA = [
+  {id:'cephalic',name:'Cephalic',level:'beginner',group:'head',view:'both',side:'mid',shape:'ellipse',x:0,y:80,rx:36,ry:54,definition:'Head region.',alternate:'Head',structures:'Cranium, facial skeleton, scalp.',clinical:'Cephalic trauma can rapidly affect airway and neurologic function.',confuse:['cervical']},
+  {id:'frontal',name:'Frontal (Frons)',level:'intermediate',group:'head',view:'anterior',side:'mid',shape:'rect',x:-14,y:46,w:28,h:14,definition:'Forehead region.',alternate:'Forehead',structures:'Frontal bone and frontalis soft tissue.',clinical:'Frontal sinus tenderness may indicate frontal sinus disease.',confuse:['orbital','nasal']},
+  {id:'orbital',name:'Orbital (Oculus)',level:'intermediate',group:'head',view:'anterior',side:'mid',shape:'rect',x:-20,y:64,w:40,h:12,definition:'Eye region.',alternate:'Ocular region',structures:'Orbit and periorbital soft tissue.',clinical:'Periorbital edema may indicate orbital pathology.',confuse:['buccal','nasal']},
+  {id:'nasal',name:'Nasal (Nasus)',level:'intermediate',group:'head',view:'anterior',side:'mid',shape:'rect',x:-10,y:78,w:20,h:12,definition:'Nose region.',alternate:'Nasal region',structures:'External nose and nares.',clinical:'Nasal trauma can compromise airway patency.',confuse:['orbital','buccal']},
+  {id:'buccal',name:'Buccal (Bucca)',level:'intermediate',group:'head',view:'anterior',side:'mid',shape:'rect',x:-24,y:92,w:48,h:14,definition:'Cheek region.',alternate:'Cheek',structures:'Buccinator region and parotid duct zone.',clinical:'Buccal swelling may indicate odontogenic infection.',confuse:['oral','nasal']},
+  {id:'oral',name:'Oral (Oris)',level:'intermediate',group:'head',view:'anterior',side:'mid',shape:'rect',x:-14,y:107,w:28,h:10,definition:'Mouth region.',alternate:'Mouth',structures:'Lips and oral vestibule.',clinical:'Oral mucosal dryness is an early dehydration sign.',confuse:['mental']},
+  {id:'mental',name:'Mental (Mentis)',level:'intermediate',group:'head',view:'anterior',side:'mid',shape:'rect',x:-14,y:119,w:28,h:10,definition:'Chin region.',alternate:'Chin',structures:'Mandibular symphyseal soft tissue.',clinical:'Mental nerve block targets lower lip/chin sensation.',confuse:['oral','cervical']},
+  {id:'cervical',name:'Cervical (Cervicis)',level:'beginner',group:'neck',view:'both',side:'mid',shape:'rect',x:-15,y:138,w:30,h:24,definition:'Neck region.',alternate:'Neck',structures:'Cervical vertebrae, airway, carotid sheath.',clinical:'Cervical stabilization is essential in trauma.',confuse:['cephalic','thoracic']},
+  {id:'thoracic',name:'Thoracic (Thorax)',level:'beginner',group:'trunk',view:'anterior',side:'mid',shape:'rect',x:-35,y:170,w:70,h:98,definition:'Thoracic/chest region.',alternate:'Chest',structures:'Thoracic wall over heart and lungs.',clinical:'Thoracic injuries may impair ventilation.',confuse:['abdominal']},
+  {id:'abdominal',name:'Abdominal',level:'beginner',group:'trunk',view:'anterior',side:'mid',shape:'rect',x:-34,y:272,w:68,h:92,definition:'Abdominal region.',alternate:'Abdomen',structures:'Abdominal wall and underlying viscera.',clinical:'Peritoneal signs localize to abdominal pathology.',confuse:['pelvic']},
+  {id:'pelvic',name:'Pelvic',level:'beginner',group:'trunk',view:'anterior',side:'mid',shape:'trapezoid',points:'-34,366 34,366 42,410 -42,410',definition:'Pelvic region of lower trunk.',alternate:'Pelvis',structures:'Pelvic girdle and overlying soft tissue.',clinical:'Pelvic fractures can produce severe occult hemorrhage.',confuse:['abdominal','femoral']},
+  {id:'brachial',name:'Brachial',level:'beginner',group:'upper',view:'both',side:'bilateral',shape:'rect',x:-68,y:206,w:24,h:94,definition:'Arm region from shoulder to elbow.',alternate:'Arm',structures:'Humerus and arm compartments.',clinical:'Humeral shaft injury may affect radial nerve.',confuse:['antebrachial']},
+  {id:'antebrachial',name:'Antebrachial',level:'beginner',group:'upper',view:'both',side:'bilateral',shape:'rect',x:-70,y:316,w:28,h:102,definition:'Forearm region.',alternate:'Forearm',structures:'Radius/ulna and forearm compartments.',clinical:'Compartment syndrome is a forearm emergency.',confuse:['brachial','cephalic']},
+  {id:'femoral',name:'Femoral',level:'beginner',group:'lower',view:'both',side:'bilateral',shape:'rect',x:-22,y:414,w:20,h:120,definition:'Thigh region.',alternate:'Thigh',structures:'Femur and thigh musculature.',clinical:'Femoral fractures can produce major blood loss.',confuse:['crural']},
+  {id:'crural',name:'Crural (Crus)',level:'beginner',group:'lower',view:'anterior',side:'bilateral',shape:'rect',x:-21,y:552,w:18,h:92,definition:'Anterior leg region (shin).',alternate:'Leg (anterior)',structures:'Tibia/fibula anteriorly.',clinical:'Crural overuse can produce tibial stress syndrome.',confuse:['femoral','gluteal']},
+  {id:'dorsal',name:'Dorsal (Dorsum)',level:'beginner',group:'trunk',view:'posterior',side:'mid',shape:'rect',x:-35,y:170,w:70,h:186,definition:'Back region of trunk.',alternate:'Back',structures:'Thoracolumbar soft tissues and paraspinals.',clinical:'Dorsal tenderness may indicate vertebral pathology.',confuse:['gluteal']},
+  {id:'gluteal',name:'Gluteal (Gluteus)',level:'intermediate',group:'lower',view:'posterior',side:'bilateral',shape:'rect',x:-41,y:400,w:42,h:44,definition:'Buttock region.',alternate:'Gluteal region',structures:'Gluteal muscle mass.',clinical:'Safe IM injection landmarks depend on gluteal anatomy.',confuse:['dorsal','femoral']}
+];
+
+class Region {
+  constructor(data){ Object.assign(this, data); }
+  matchesDifficulty(level){
+    if(level==='beginner') return this.level==='beginner';
+    if(level==='intermediate') return this.level!=='advanced';
+    return true;
+  }
+  compatibleWith(card){ return card.view==='both' || this.view===card.view || this.view==='both'; }
+  sideOffsets(){ return this.side==='left'?[-60]:this.side==='right'?[60]:this.side==='bilateral'?[-60,60]:[0]; }
+}
+
+class AnatomyModel {
+  constructor(svg){ this.svg=svg; this.center={anterior:225, posterior:695}; this.ns='http://www.w3.org/2000/svg'; }
+  clear(){ this.svg.innerHTML=''; }
+  drawBase(){ this.drawSilhouette(this.center.anterior,false); this.drawSilhouette(this.center.posterior,true); this.drawOrientation(this.center.anterior,'Anterior View'); this.drawOrientation(this.center.posterior,'Posterior View'); }
+  drawSilhouette(cx,posterior){
+    const p=this.el('path',{class:'silhouette',d:`M${cx},24 C${cx-35},24 ${cx-41},56 ${cx-37},94 L${cx-35},140 L${cx-53},165 L${cx-67},300 L${cx-55},370 L${cx-67},410 L${cx-75},698 L${cx-49},706 L${cx-39},414 L${cx-23},410 L${cx-23},704 L${cx-3},708 L${cx},420 L${cx+3},708 L${cx+23},704 L${cx+23},410 L${cx+39},414 L${cx+49},706 L${cx+75},698 L${cx+67},410 L${cx+55},370 L${cx+67},300 L${cx+53},165 L${cx+35},140 L${cx+37},94 C${cx+41},56 ${cx+35},24 ${cx},24 Z`});
+    this.svg.appendChild(p);
+    const lm=this.el('path',{class:'landmark',d:posterior?`M${cx},160 L${cx},395 M${cx-20},395 Q${cx},380 ${cx+20},395`:`M${cx-20},170 Q${cx},160 ${cx+20},170 M${cx-18},366 Q${cx},358 ${cx+18},366`});
+    this.svg.appendChild(lm);
+  }
+  drawOrientation(cx,title){
+    this.svg.appendChild(this.el('line',{class:'axis',x1:cx-85,y1:14,x2:cx+85,y2:14}));
+    this.svg.appendChild(this.text(cx,10,title,'axis-label','middle'));
+    this.svg.appendChild(this.text(cx-90,26,'Anatomical Left','axis-label','start'));
+    this.svg.appendChild(this.text(cx+90,26,'Anatomical Right','axis-label','start'));
+  }
+  drawRegion(region, mode, onSelect){
+    const drawAt = (viewCenter)=>{
+      region.sideOffsets().forEach(off=>{
+        let el;
+        if(region.shape==='rect') el=this.el('rect',{x:viewCenter+region.x+off,y:region.y,width:region.w,height:region.h,rx:4});
+        if(region.shape==='ellipse') el=this.el('ellipse',{cx:viewCenter+region.x+off,cy:region.y,rx:region.rx,ry:region.ry});
+        if(region.shape==='trapezoid') el=this.el('polygon',{points:region.points.split(' ').map(p=>{const [x,y]=p.split(',').map(Number); return `${viewCenter+x+off},${y}`;}).join(' ')});
+        el.setAttribute('class','region'); el.setAttribute('fill',AppColors.group(region.group)); el.dataset.regionId=region.id;
+        if(mode==='nameToVisual') el.addEventListener('click',()=>onSelect(region.id));
+        this.svg.appendChild(el);
+      });
+    };
+    if(region.view==='anterior' || region.view==='both') drawAt(this.center.anterior);
+    if(region.view==='posterior' || region.view==='both') drawAt(this.center.posterior);
+  }
+  highlightTarget(id){ [...this.svg.querySelectorAll(`[data-region-id="${id}"]`)].forEach(el=>el.classList.add('target')); }
+  markAnswers(correctId, chosenId){ [...document.querySelectorAll('.region')].forEach(el=>{ if(el.dataset.regionId===correctId) el.classList.add('correct'); if(chosenId && el.dataset.regionId===chosenId && chosenId!==correctId) el.classList.add('wrong'); }); }
+  drawCallout(card){
+    const cx=card.view==='posterior'?this.center.posterior:this.center.anterior; const px=cx+card.x; const py=card.y; const tx=px<460?px-90:px+90;
+    this.svg.appendChild(this.el('path',{class:'callout',d:`M${px},${py} L${tx},${py-18}`}));
+    this.svg.appendChild(this.text(tx,py-22,'1','callout-label',px<460?'end':'start'));
+  }
+  el(tag,attrs){ const e=document.createElementNS(this.ns,tag); Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v)); return e; }
+  text(x,y,t,cls,anchor){ const e=this.el('text',{x,y,class:cls,'text-anchor':anchor}); e.textContent=t; return e; }
+}
+
+class FlashcardEngine {
+  constructor(regions){ this.regions=regions.map(r=>new Region(r)); this.stats={attempts:0,correct:0,totalMs:0,mistakes:{}}; this.mode='visualToName'; this.difficulty='beginner'; this.current=null; this.answered=false; this.start=performance.now(); }
+  pool(){ return this.regions.filter(r=>r.matchesDifficulty(this.difficulty)); }
+  nextCard(){ const p=this.pool(); if(!p.length) return null; this.current=p[Math.floor(Math.random()*p.length)]; this.answered=false; this.start=performance.now(); return this.current; }
+  options(){
+    const c=this.current; const p=this.pool().filter(r=>r.id!==c.id && r.compatibleWith(c));
+    const preferred=p.filter(r=>(c.confuse||[]).includes(r.id));
+    return this.shuffle([c,...this.shuffle(preferred).concat(this.shuffle(p.filter(r=>!preferred.includes(r)))).slice(0,3)]);
+  }
+  answer(id){ if(!this.current||this.answered) return null; this.answered=true; const correct=id===this.current.id; const ms=performance.now()-this.start; this.stats.attempts++; this.stats.totalMs+=ms; if(correct) this.stats.correct++; else this.stats.mistakes[this.current.id]=(this.stats.mistakes[this.current.id]||0)+1; return {correct,ms}; }
+  confusion(chosenId){ const chosen=this.regions.find(r=>r.id===chosenId), c=this.current; if(!c) return 'Review regional landmarks.'; if(chosen && (c.confuse||[]).includes(chosen.id)) return `Common confusion: ${chosen.name} versus ${c.name}.`; return `Review boundaries for ${c.name}.`; }
+  resetStats(){ this.stats={attempts:0,correct:0,totalMs:0,mistakes:{}}; }
+  diagnostics(){
+    const errs=[]; const ids=new Set(this.regions.map(r=>r.id));
+    ['visualToName','nameToVisual'].forEach(m=>['beginner','intermediate','advanced'].forEach(d=>{this.mode=m; this.difficulty=d; if(!this.pool().length) errs.push(`Empty pool ${m}/${d}`);}));
+    this.regions.forEach(r=>{ if(!['anterior','posterior','both'].includes(r.view)) errs.push(`Invalid view: ${r.id}`); if(!['mid','left','right','bilateral'].includes(r.side)) errs.push(`Invalid side: ${r.id}`); (r.confuse||[]).forEach(c=>{if(!ids.has(c)) errs.push(`Unknown confusion id '${c}' in ${r.id}`);}); });
+    return errs;
+  }
+  shuffle(arr){ const c=[...arr]; for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [c[i],c[j]]=[c[j],c[i]];} return c; }
+}
+
+class AppColors { static group(g){ return ({head:'var(--head)',neck:'var(--neck)',trunk:'var(--trunk)',upper:'var(--upper)',lower:'var(--lower)'})[g]||'#ddd'; } }
+
+class FlashcardApp {
+  constructor(){
+    this.ui={diagram:document.getElementById('diagram'),viewBadge:document.getElementById('viewBadge'),mode:document.getElementById('mode'),difficulty:document.getElementById('difficulty'),prompt:document.getElementById('prompt'),choices:document.getElementById('choices'),feedback:document.getElementById('feedback'),back:document.getElementById('back'),masked:document.getElementById('maskedName'),frontNote:document.getElementById('frontNote'),stats:document.getElementById('stats'),nextBtn:document.getElementById('nextBtn'),resetBtn:document.getElementById('resetBtn')};
+    this.engine=new FlashcardEngine(REGION_DATA);
+    this.model=new AnatomyModel(this.ui.diagram);
+    this.bind();
+  }
+  bind(){
+    this.ui.nextBtn.addEventListener('click',()=>this.loadNext());
+    this.ui.mode.addEventListener('change',e=>{this.engine.mode=e.target.value; this.loadNext();});
+    this.ui.difficulty.addEventListener('change',e=>{this.engine.difficulty=e.target.value; this.loadNext();});
+    this.ui.resetBtn.addEventListener('click',()=>{this.engine.resetStats(); this.renderStats(); this.loadNext();});
+  }
+  loadNext(){
+    const card=this.engine.nextCard();
+    if(!card){ this.ui.prompt.textContent='No cards available for this mode/difficulty.'; this.ui.choices.innerHTML=''; return; }
+    this.ui.masked.textContent='Region: ▮▮▮▮▮▮▮'; this.ui.back.hidden=true; this.ui.feedback.innerHTML='';
+    this.renderDiagram(card); this.renderPrompt(card); this.renderStats();
+  }
+  renderDiagram(card){
+    this.model.clear(); this.model.drawBase();
+    this.engine.regions.forEach(r=>{ if(r.compatibleWith(card)) this.model.drawRegion(r,this.engine.mode,(id)=>this.submit(id)); });
+    if(this.engine.mode==='visualToName'){ this.model.highlightTarget(card.id); this.model.drawCallout(card); }
+    const viewTxt=card.view==='both'?'anterior + posterior':card.view;
+    this.ui.viewBadge.innerHTML=`<span class="chip">Card view: ${viewTxt}</span><span class="chip">Orientation: true anatomical left/right</span><span class="chip">OOP architecture</span>`;
+  }
+  renderPrompt(card){
+    this.ui.choices.innerHTML='';
+    if(this.engine.mode==='visualToName'){
+      this.ui.prompt.textContent='Select the highlighted anatomical term.';
+      this.engine.options().forEach(r=>{ const b=document.createElement('button'); b.textContent=r.name; b.onclick=()=>this.submit(r.id); this.ui.choices.appendChild(b); });
+      this.ui.frontNote.textContent='Front: identify the highlighted region (visual → name).';
+    } else {
+      this.ui.prompt.textContent=`Tap the region for: ${card.name}`;
+      this.ui.frontNote.textContent='Front: term shown; select the precise region (name → visual).';
+    }
+  }
+  submit(choiceId){
+    const result=this.engine.answer(choiceId); if(!result) return;
+    const card=this.engine.current;
+    this.ui.feedback.className=`feedback ${result.correct?'ok':'bad'}`;
+    this.ui.feedback.textContent=result.correct?`Correct (${(result.ms/1000).toFixed(1)}s).`:`Not quite (${(result.ms/1000).toFixed(1)}s). ${this.engine.confusion(choiceId)}`;
+    this.model.markAnswers(card.id, choiceId);
+    this.ui.masked.textContent=`Region: ${card.name}`;
+    this.ui.back.hidden=false;
+    this.ui.back.innerHTML=`<h3>Back of Card</h3><p><strong>Formal definition:</strong> ${card.definition}</p><p><strong>Common alternate name:</strong> ${card.alternate}</p><p><strong>Major structures:</strong> ${card.structures}</p><p><strong>Clinical relevance:</strong> ${card.clinical}</p>`;
+    this.renderStats();
+  }
+  renderStats(){
+    const s=this.engine.stats, acc=s.attempts?(100*s.correct/s.attempts).toFixed(1):'0.0', avg=s.attempts?(s.totalMs/s.attempts/1000).toFixed(1):'0.0';
+    const top=Object.entries(s.mistakes).sort((a,b)=>b[1]-a[1])[0];
+    this.ui.stats.innerHTML=`<div class="stat"><strong>Attempts:</strong> ${s.attempts}</div><div class="stat"><strong>Accuracy:</strong> ${acc}%</div><div class="stat"><strong>Avg response:</strong> ${avg}s</div><div class="stat"><strong>Repeated mistake:</strong> ${top?this.engine.regions.find(r=>r.id===top[0]).name+' ('+top[1]+')':'None yet'}</div>`;
+  }
+  runDiagnostics(){
+    const errs=this.engine.diagnostics();
+    this.engine.mode=this.ui.mode.value; this.engine.difficulty=this.ui.difficulty.value;
+    if(errs.length) console.error('Diagnostics failed',errs); else console.log('Diagnostics passed');
+    return errs;
+  }
+}
+
+window.app = new FlashcardApp();
+window.app.renderStats();
+window.app.runDiagnostics();
+window.app.loadNext();
+</script>
+</body>
+</html>
